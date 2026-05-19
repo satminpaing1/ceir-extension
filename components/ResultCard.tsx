@@ -99,7 +99,6 @@ export default function ResultCard({ result }: ResultCardProps) {
             <DeviceInfoCard 
               deviceInfo={result.deviceInfo} 
               isOpen={true} 
-              onToggle={() => {}} 
             />
           </div>
         )}
