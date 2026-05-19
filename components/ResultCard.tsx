@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ImeiCheckResult } from '@/utils/types';
 import { formatResultForClipboard } from '@/utils/copy-format';
 import StatusBadge from './StatusBadge';
@@ -31,6 +32,9 @@ function formatDate(dateStr: string): string {
 }
 
 export default function ResultCard({ result }: ResultCardProps) {
+  // Device Info အဖွင့်/အပိတ် အတွက် State (မူလက ပိတ်ထားမယ် - false)
+  const [isDeviceInfoOpen, setIsDeviceInfoOpen] = useState(false);
+
   const handleCopy = async () => {
     await navigator.clipboard.writeText(formatResultForClipboard(result));
   };
@@ -96,12 +100,31 @@ export default function ResultCard({ result }: ResultCardProps) {
 
         {/* Device Info */}
         {result.deviceInfo ? (
-          <div className="mt-4">
-            <DeviceInfoCard 
-              deviceInfo={result.deviceInfo} 
-              isOpen={true} 
-              onToggle={() => {}} 
-            />
+          <div className="mt-4 border-t pt-4">
+             {/* Device Info ခေါင်းစဉ် (နှိပ်လို့ရအောင် လုပ်ထားတယ်) */}
+            <button 
+              onClick={() => setIsDeviceInfoOpen(!isDeviceInfoOpen)}
+              className="flex w-full items-center justify-between text-left focus:outline-none"
+            >
+              <span className="text-sm font-semibold text-gray-700">Device Info ပြ/ဖျောက်ရန် နှိပ်ပါ</span>
+              <svg 
+                className={`h-5 w-5 text-gray-500 transition-transform ${isDeviceInfoOpen ? 'rotate-180' : ''}`} 
+                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {/* State က true ဖြစ်မှပဲ Device Info Card ကို ပြမယ် */}
+            {isDeviceInfoOpen && (
+              <div className="mt-3">
+                <DeviceInfoCard 
+                  deviceInfo={result.deviceInfo} 
+                  isOpen={true} 
+                  onToggle={() => {}} 
+                />
+              </div>
+            )}
           </div>
         ) : null}
 
