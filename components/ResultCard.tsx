@@ -1,41 +1,9 @@
-import type { ImeiCheckResult } from '@/utils/types';
-import { formatResultForClipboard } from '@/utils/copy-format';
-import StatusBadge from './StatusBadge';
-import DeviceInfoCard from './DeviceInfoCard';
-import CopyButton from './CopyButton';
-
+// အစ်ကို့ရဲ့ ResultCard.tsx အတွက် သန့်စင်ပြီးသား Code
 interface ResultCardProps {
   result: ImeiCheckResult;
-  isDeviceInfoOpen: boolean;
-  onToggleDeviceInfo: () => void;
 }
 
-function getPaymentStateLabel(state: string) {
-  switch (state) {
-    case 'PAID':
-    case 'ACCUMULATION': return 'ဆောင်ပြီး';
-    case 'UNPAID': return 'မဆောင်ရသေး';
-    case 'AMNESTY': return 'ကန့်သတ်ချက်ဖြင့်ခွင့်ပြုထားသည့်ပစ္စည်း';
-    default: return 'မသိရ';
-  }
-}
-
-function getPaymentStateVariant(state: string) {
-  switch (state) {
-    case 'PAID':
-    case 'ACCUMULATION': return 'success' as const;
-    case 'UNPAID': return 'danger' as const;
-    case 'AMNESTY': return 'warning' as const;
-    default: return 'neutral' as const;
-  }
-}
-
-function formatDate(dateStr: string): string {
-  try { return new Date(dateStr).toLocaleString(); } 
-  catch { return dateStr; }
-}
-
-export default function ResultCard({ result, isDeviceInfoOpen, onToggleDeviceInfo }: ResultCardProps) {
+export default function ResultCard({ result }: ResultCardProps) {
   const handleCopy = async () => {
     await navigator.clipboard.writeText(formatResultForClipboard(result));
   };
@@ -77,7 +45,6 @@ export default function ResultCard({ result, isDeviceInfoOpen, onToggleDeviceInf
             </dd>
           </div>
 
-          {/* ပိတ်ပင်မည့်ရက် (Block Date) အသစ်ထည့်လိုက်တာ */}
           {result.endOfGracePeriod && (
             <div className="flex items-center justify-between border-t pt-2">
               <dt className="text-sm text-red-600 font-bold">ပိတ်ပင်မည့်ရက်</dt>
@@ -97,7 +64,6 @@ export default function ResultCard({ result, isDeviceInfoOpen, onToggleDeviceInf
           )}
         </dl>
 
-        {/* Device Info ကို အမြဲပွင့်နေစေရန် isOpen={true} ဟု ပြင်လိုက်ပါပြီ */}
         {result.deviceInfo && (
           <div className="mt-4">
             <DeviceInfoCard 
