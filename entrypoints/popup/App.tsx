@@ -42,7 +42,7 @@ function App() {
           IMEI စစ်ဆေးမည်
         </button>
 
-        <GitHubBanner />
+        
       </div>
     </div>
   );
