@@ -73,6 +73,16 @@ export default function ResultCard({ result }: ResultCardProps) {
             </dd>
           </div>
 
+          {/* ပိတ်ပင်မည့်ရက် သို့မဟုတ် မှတ်ချက် */}
+          <div className="flex items-center justify-between border-t pt-2">
+            <dt className="text-sm text-gray-500">ပိတ်ပင်မည့်ရက် / မှတ်ချက်</dt>
+            <dd className={`text-sm font-semibold ${result.endOfGracePeriod ? 'text-red-600 font-bold' : 'text-emerald-600'}`}>
+              {result.endOfGracePeriod 
+                ? formatDate(result.endOfGracePeriod) 
+                : "၄ လပိုင်းအရှေ့ပိုင်းက စာရင်းသွင်းထားသောဖုန်း"}
+            </dd>
+          </div>
+
           {/* စာရင်းသွင်းထားသောရက် */}
           {result.networkDate ? (
             <div className="flex items-center justify-between">
@@ -84,7 +94,7 @@ export default function ResultCard({ result }: ResultCardProps) {
           ) : null}
         </dl>
 
-        {/* Device Info (အမြဲပွင့်နေစေရန်) */}
+        {/* Device Info */}
         {result.deviceInfo ? (
           <div className="mt-4">
             <DeviceInfoCard 
