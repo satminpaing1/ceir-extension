@@ -1,6 +1,36 @@
-// အစ်ကို့ရဲ့ ResultCard.tsx အတွက် သန့်စင်ပြီးသား Code
+import type { ImeiCheckResult } from '@/utils/types';
+import { formatResultForClipboard } from '@/utils/copy-format';
+import StatusBadge from './StatusBadge';
+import DeviceInfoCard from './DeviceInfoCard';
+import CopyButton from './CopyButton';
+
 interface ResultCardProps {
   result: ImeiCheckResult;
+}
+
+function getPaymentStateLabel(state: string) {
+  switch (state) {
+    case 'PAID':
+    case 'ACCUMULATION': return 'ဆောင်ပြီး';
+    case 'UNPAID': return 'မဆောင်ရသေး';
+    case 'AMNESTY': return 'ကန့်သတ်ချက်ဖြင့်ခွင့်ပြုထားသည့်ပစ္စည်း';
+    default: return 'မသိရ';
+  }
+}
+
+function getPaymentStateVariant(state: string) {
+  switch (state) {
+    case 'PAID':
+    case 'ACCUMULATION': return 'success' as const;
+    case 'UNPAID': return 'danger' as const;
+    case 'AMNESTY': return 'warning' as const;
+    default: return 'neutral' as const;
+  }
+}
+
+function formatDate(dateStr: string): string {
+  try { return new Date(dateStr).toLocaleString(); } 
+  catch { return dateStr; }
 }
 
 export default function ResultCard({ result }: ResultCardProps) {
@@ -45,12 +75,13 @@ export default function ResultCard({ result }: ResultCardProps) {
             </dd>
           </div>
 
-          <div className="flex items-center justify-between border-t pt-2">
-            <dt className="text-sm text-red-600 font-bold">ပိတ်ပင်မည့်ရက်</dt>
-            <dd className="text-sm font-bold text-red-600">
-            {result.endOfGracePeriod ? formatDate(result.endOfGracePeriod) : "သတ်မှတ်ချက်မရှိ"}
-         </dd>
-         </div>
+          {result.endOfGracePeriod && (
+            <div className="flex items-center justify-between border-t pt-2">
+              <dt className="text-sm text-red-600 font-bold">ပိတ်ပင်မည့်ရက်</dt>
+              <dd className="text-sm font-bold text-red-600">
+                {formatDate(result.endOfGracePeriod)}
+              </dd>
+            </div>
           )}
 
           {result.networkDate && (
