@@ -13,37 +13,26 @@ interface ResultCardProps {
 function getPaymentStateLabel(state: string) {
   switch (state) {
     case 'PAID':
-    case 'ACCUMULATION':
-      return 'ဆောင်ပြီး';
-    case 'UNPAID':
-      return 'မဆောင်ရသေး';
-    case 'AMNESTY':
-      return 'ကန့်သတ်ချက်ဖြင့်ခွင့်ပြုထားသည့်ပစ္စည်း';
-    default:
-      return 'မသိရ';
+    case 'ACCUMULATION': return 'ဆောင်ပြီး';
+    case 'UNPAID': return 'မဆောင်ရသေး';
+    case 'AMNESTY': return 'ကန့်သတ်ချက်ဖြင့်ခွင့်ပြုထားသည့်ပစ္စည်း';
+    default: return 'မသိရ';
   }
 }
 
 function getPaymentStateVariant(state: string) {
   switch (state) {
     case 'PAID':
-    case 'ACCUMULATION':
-      return 'success' as const;
-    case 'UNPAID':
-      return 'danger' as const;
-    case 'AMNESTY':
-      return 'warning' as const;
-    default:
-      return 'neutral' as const;
+    case 'ACCUMULATION': return 'success' as const;
+    case 'UNPAID': return 'danger' as const;
+    case 'AMNESTY': return 'warning' as const;
+    default: return 'neutral' as const;
   }
 }
 
 function formatDate(dateStr: string): string {
-  try {
-    return new Date(dateStr).toLocaleString();
-  } catch {
-    return dateStr;
-  }
+  try { return new Date(dateStr).toLocaleString(); } 
+  catch { return dateStr; }
 }
 
 export default function ResultCard({ result, isDeviceInfoOpen, onToggleDeviceInfo }: ResultCardProps) {
@@ -54,16 +43,11 @@ export default function ResultCard({ result, isDeviceInfoOpen, onToggleDeviceInf
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="p-4 sm:p-5">
-        {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-1">
             <CopyButton onCopy={handleCopy} title="Copy result" />
-
-            <h3 className="font-mono text-sm font-semibold text-gray-900">
-              {result.IMEI}
-            </h3>
+            <h3 className="font-mono text-sm font-semibold text-gray-900">{result.IMEI}</h3>
           </div>
-
           <div className="flex items-center gap-1">
             <StatusBadge
               label={result.WrongFormat || result.Incorrect ? 'IMEI မှားယွင်းသည်' : 'IMEI မှန်ကန်သည်'}
@@ -72,7 +56,6 @@ export default function ResultCard({ result, isDeviceInfoOpen, onToggleDeviceInf
           </div>
         </div>
 
-        {/* Info rows */}
         <dl className="space-y-3">
           <div className="flex items-center justify-between">
             <dt className="text-sm text-gray-500">အခွန်ဆောင်ပြီးစီးမှု အခြေအနေ</dt>
@@ -94,6 +77,16 @@ export default function ResultCard({ result, isDeviceInfoOpen, onToggleDeviceInf
             </dd>
           </div>
 
+          {/* ပိတ်ပင်မည့်ရက် (Block Date) အသစ်ထည့်လိုက်တာ */}
+          {result.endOfGracePeriod && (
+            <div className="flex items-center justify-between border-t pt-2">
+              <dt className="text-sm text-red-600 font-bold">ပိတ်ပင်မည့်ရက်</dt>
+              <dd className="text-sm font-bold text-red-600">
+                {formatDate(result.endOfGracePeriod)}
+              </dd>
+            </div>
+          )}
+
           {result.networkDate && (
             <div className="flex items-center justify-between">
               <dt className="text-sm text-gray-500">စာရင်းသွင်းထားသောရက်</dt>
@@ -104,10 +97,14 @@ export default function ResultCard({ result, isDeviceInfoOpen, onToggleDeviceInf
           )}
         </dl>
 
-        {/* Device Info (collapsible) */}
+        {/* Device Info ကို အမြဲပွင့်နေစေရန် isOpen={true} ဟု ပြင်လိုက်ပါပြီ */}
         {result.deviceInfo && (
           <div className="mt-4">
-            <DeviceInfoCard deviceInfo={result.deviceInfo} isOpen={isDeviceInfoOpen} onToggle={onToggleDeviceInfo} />
+            <DeviceInfoCard 
+              deviceInfo={result.deviceInfo} 
+              isOpen={true} 
+              onToggle={() => {}} 
+            />
           </div>
         )}
       </div>
