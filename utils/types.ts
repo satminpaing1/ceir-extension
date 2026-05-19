@@ -23,8 +23,9 @@ export interface DeviceInfo {
 
 export interface ImeiCheckResult {
   paymentState: string;
-  blockState: string;
-  networkDate: string;
+  blockState: string | null;
+  networkDate: string | null;
+  endOfGracePeriod: string | null; // ဒါလေးက အရေးကြီးလို့ ထည့်ပေးထားပါတယ်
   grayListHistory: string | null;
   deviceIMEI: string | null;
   declarationId: string | null;
@@ -33,7 +34,7 @@ export interface ImeiCheckResult {
   IMEI14: string;
   WrongFormat: boolean;
   Incorrect: boolean;
-  deviceInfo: DeviceInfo | null;
+  deviceInfo: DeviceInfo | null; // ဒါကလည်း ရှိပြီးသားမို့လို့ အဆင်ပြေပါတယ်
 }
 
 export interface ImeiCheckResponse {
