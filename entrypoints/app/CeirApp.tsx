@@ -74,11 +74,6 @@ function CeirApp() {
           </div>
         )}
 
-        {/* ── GitHub ── */}
-        <div className="my-4">
-          <GitHubBanner />
-        </div>
-
         {/* ── Results ── */}
         <ResultsSection results={results} />
 
