@@ -73,15 +73,7 @@ export default function ResultCard({ result }: ResultCardProps) {
             </dd>
           </div>
 
-          {result.endOfGracePeriod ? (
-            <div className="flex items-center justify-between border-t pt-2">
-              <dt className="text-sm text-red-600 font-bold">ပိတ်ပင်မည့်ရက်</dt>
-              <dd className="text-sm font-bold text-red-600">
-                {formatDate(result.endOfGracePeriod)}
-              </dd>
-            </div>
-          ) : null}
-
+          {/* စာရင်းသွင်းထားသောရက် */}
           {result.networkDate ? (
             <div className="flex items-center justify-between">
               <dt className="text-sm text-gray-500">စာရင်းသွင်းထားသောရက်</dt>
@@ -92,7 +84,7 @@ export default function ResultCard({ result }: ResultCardProps) {
           ) : null}
         </dl>
 
-        {/* Device Info */}
+        {/* Device Info (အမြဲပွင့်နေစေရန်) */}
         {result.deviceInfo ? (
           <div className="mt-4">
             <DeviceInfoCard 
