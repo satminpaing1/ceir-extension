@@ -45,13 +45,12 @@ export default function ResultCard({ result }: ResultCardProps) {
             </dd>
           </div>
 
-          {result.endOfGracePeriod && (
-            <div className="flex items-center justify-between border-t pt-2">
-              <dt className="text-sm text-red-600 font-bold">ပိတ်ပင်မည့်ရက်</dt>
-              <dd className="text-sm font-bold text-red-600">
-                {formatDate(result.endOfGracePeriod)}
-              </dd>
-            </div>
+          <div className="flex items-center justify-between border-t pt-2">
+            <dt className="text-sm text-red-600 font-bold">ပိတ်ပင်မည့်ရက်</dt>
+            <dd className="text-sm font-bold text-red-600">
+            {result.endOfGracePeriod ? formatDate(result.endOfGracePeriod) : "သတ်မှတ်ချက်မရှိ"}
+         </dd>
+         </div>
           )}
 
           {result.networkDate && (
