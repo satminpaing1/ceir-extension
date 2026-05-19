@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import ResultCard from '@/components/ResultCard';
 import CopyButton from '@/components/CopyButton';
 import { formatAllResultsForClipboard } from '@/utils/copy-format';
@@ -12,19 +12,42 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
   const [deviceInfoOpen, setDeviceInfoOpen] = useState<Record<string, boolean>>({});
   const [allExpanded, setAllExpanded] = useState(false);
 
-  const toggleDeviceInfo = useCallback((imei: string) => {
-    setDeviceInfoOpen((prev) => ({ ...prev, [imei]: !prev[imei] }));
+  // Model Name တူရင် IMEI တွေကို Group ဖွဲ့မည့် Logic
+  const groupedResults = useMemo(() => {
+    const groups: { id: string; items: ImeiCheckResult[]; deviceInfo: any }[] = [];
+    const modelMap = new Map<string, number>();
+
+    for (const r of results) {
+      if (r.deviceInfo && r.deviceInfo.gsmaModelName) {
+        const key = r.deviceInfo.gsmaModelName;
+        if (modelMap.has(key)) {
+          const index = modelMap.get(key)!;
+          groups[index].items.push(r);
+        } else {
+          groups.push({ id: key, items: [r], deviceInfo: r.deviceInfo });
+          modelMap.set(key, groups.length - 1);
+        }
+      } else {
+        // Device Info မရှိရင် သီးသန့်စီ ခွဲထားမယ်
+        groups.push({ id: r.IMEI, items: [r], deviceInfo: null });
+      }
+    }
+    return groups;
+  }, [results]);
+
+  const toggleDeviceInfo = useCallback((id: string) => {
+    setDeviceInfoOpen((prev) => ({ ...prev, [id]: !prev[id] }));
   }, []);
 
   const toggleAll = useCallback(() => {
     const next = !allExpanded;
     setAllExpanded(next);
     const map: Record<string, boolean> = {};
-    for (const r of results) {
-      if (r.deviceInfo) map[r.IMEI] = next;
+    for (const g of groupedResults) {
+      if (g.deviceInfo) map[g.id] = next;
     }
     setDeviceInfoOpen(map);
-  }, [allExpanded, results]);
+  }, [allExpanded, groupedResults]);
 
   const copyAll = useCallback(async () => {
     await navigator.clipboard.writeText(formatAllResultsForClipboard(results));
@@ -38,7 +61,7 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
         <h2 className="text-lg font-semibold text-gray-900">
           စစ်ဆေးမှု ရလာဒ်များ
         </h2>
-        {results.some((r) => r.deviceInfo) && (
+        {groupedResults.some((g) => g.deviceInfo) && (
           <div className="flex items-stretch overflow-hidden rounded-md border border-gray-300 bg-white divide-x divide-gray-300">
             {/* Copy All */}
             <CopyButton
@@ -73,12 +96,12 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
         )}
       </div>
       <div className="space-y-4">
-        {results.map((result) => (
+        {groupedResults.map((group) => (
           <ResultCard
-            key={result.IMEI}
-            result={result}
-            isDeviceInfoOpen={!!deviceInfoOpen[result.IMEI]}
-            onToggleDeviceInfo={() => toggleDeviceInfo(result.IMEI)}
+            key={group.id}
+            group={group}
+            isDeviceInfoOpen={!!deviceInfoOpen[group.id]}
+            onToggleDeviceInfo={() => toggleDeviceInfo(group.id)}
           />
         ))}
       </div>
