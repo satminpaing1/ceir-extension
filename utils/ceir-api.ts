@@ -49,11 +49,18 @@ export async function verifyImeis(
 
 // Device Info ကို API ကနေ လှမ်းယူမည့် Function
 export async function fetchDeviceInfo(imei: string, solution: any) {
-  // Altcha payload ကို ယူရန်
-  const altchaPayload = solution?.payload ? solution.payload : solution;
+  // Altcha solution ကို URL မှာထည့်လို့ရမယ့် Base64 String အဖြစ် အသေအချာပြောင်းရန်
+  let altchaString = '';
+  if (typeof solution === 'string') {
+    altchaString = solution;
+  } else {
+    // Object ဖြစ်နေရင် JSON ပြောင်းပြီး Base64 (btoa) နဲ့ ကုဒ်ဝှက်မယ်
+    const payload = solution?.payload ? solution.payload : solution;
+    altchaString = btoa(JSON.stringify(payload));
+  }
   
-  // Network tab က မြင်ရတဲ့အတိုင်း GET request ခေါ်ရန်
-  const url = `https://ceir.gov.mm/openapi/API/Device/personal-device-info?altcha=${encodeURIComponent(altchaPayload)}&imei=${imei}`;
+  // URL ကို တည်ဆောက်ရန်
+  const url = `https://ceir.gov.mm/openapi/API/Device/personal-device-info?altcha=${encodeURIComponent(altchaString)}&imei=${imei}`;
   
   const response = await fetch(url, {
     method: 'GET',
