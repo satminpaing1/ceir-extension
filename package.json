@@ -2,7 +2,7 @@
   "name": "ceir-ext",
   "description": "Bulk IMEI status and device information checker for ceir.gov.mm",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "wxt",
