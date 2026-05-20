@@ -16,14 +16,17 @@ interface ResultCardProps {
   onToggleDeviceInfo: () => void;
 }
 
-function getPaymentStateLabel(state: string) {
+// မှားယွင်းနေသော IMEI ဖြစ်ပါက 'မသိရ' ဟုသာ ပြရန်
+function getPaymentStateLabel(state: string, isInvalid: boolean) {
+  if (isInvalid) return 'မသိရ';
   if (state === 'PAID' || state === 'ACCUMULATION') return 'ဆောင်ပြီး';
   if (state === 'UNPAID') return 'မဆောင်ရသေး';
   if (state === 'AMNESTY') return 'ကန့်သတ်ချက်ဖြင့်ခွင့်ပြုထားသည့်ပစ္စည်း';
   return 'မသိရ';
 }
 
-function getPaymentStateVariant(state: string) {
+function getPaymentStateVariant(state: string, isInvalid: boolean) {
+  if (isInvalid) return 'neutral' as const;
   if (state === 'PAID' || state === 'ACCUMULATION') return 'success' as const;
   if (state === 'UNPAID') return 'danger' as const;
   if (state === 'AMNESTY') return 'warning' as const;
@@ -39,7 +42,6 @@ function formatDate(dateStr: string): string {
 }
 
 export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo }: ResultCardProps) {
-  // IMEI တွေထဲမှာ ဆောင်ပြီးသားရော၊ မဆောင်ရသေးတာရော ပါနေလား စစ်ဆေးခြင်း
   const hasPaid = group.items.some(r => r.paymentState === 'PAID' || r.paymentState === 'ACCUMULATION');
   const hasUnpaid = group.items.some(r => r.paymentState === 'UNPAID');
   const isMixedPayment = hasPaid && hasUnpaid;
@@ -48,68 +50,83 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="p-4 sm:p-5">
         
-        {/* IMEI များကို တစ်ခုချင်းစီ Loop ပတ်၍ ပြရန် */}
-        {group.items.map((result, index) => (
-          <div key={result.IMEI} className={index > 0 ? "mt-6 border-t pt-6" : ""}>
-            {/* Header */}
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <CopyButton 
-                  onCopy={async () => navigator.clipboard.writeText(formatResultForClipboard(result))} 
-                  title="Copy result" 
+        {group.items.map((result, index) => {
+          // Frontend ပေါ်တွင် IMEI အရှည်နှင့် ဂဏန်း ဟုတ်/မဟုတ် သေချာစစ်ဆေးခြင်း
+          const isInvalid = 
+            result.WrongFormat || 
+            result.Incorrect || 
+            !result.IMEI || 
+            result.IMEI.length < 14 || 
+            !/^\d+$/.test(result.IMEI);
+
+          return (
+            <div key={result.IMEI} className={index > 0 ? "mt-6 border-t pt-6" : ""}>
+              {/* Header */}
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CopyButton 
+                    onCopy={async () => navigator.clipboard.writeText(formatResultForClipboard(result))} 
+                    title="Copy result" 
+                  />
+                  <h3 className="font-mono text-sm font-semibold text-gray-900">
+                    {/* Device တစ်ခုတည်းမှာ IMEI ၁ ခုထက်များနေရင် IMEI 1, IMEI 2 စသဖြင့် တပ်ပေးရန် */}
+                    {group.items.length > 1 && (
+                      <span className="text-indigo-600 mr-1">IMEI {index + 1} :</span>
+                    )}
+                    {result.IMEI}
+                  </h3>
+                </div>
+                <StatusBadge
+                  label={isInvalid ? 'IMEI မှားယွင်းသည်' : 'IMEI မှန်ကန်သည်'}
+                  variant={isInvalid ? 'danger' : 'success'}
                 />
-                <h3 className="font-mono text-sm font-semibold text-gray-900">{result.IMEI}</h3>
-              </div>
-              <StatusBadge
-                label={result.WrongFormat || result.Incorrect ? 'IMEI မှားယွင်းသည်' : 'IMEI မှန်ကန်သည်'}
-                variant={result.WrongFormat || result.Incorrect ? 'danger' : 'success'}
-              />
-            </div>
-
-            {/* Info List */}
-            <dl className="space-y-3">
-              <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">အခွန်ဆောင်ပြီးစီးမှု အခြေအနေ</dt>
-                <dd>
-                  <StatusBadge
-                    label={getPaymentStateLabel(result.paymentState)}
-                    variant={getPaymentStateVariant(result.paymentState)}
-                  />
-                </dd>
               </div>
 
-              <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">ကွန်ရက်တွင် ချိတ်ဆက်ခွင့်</dt>
-                <dd>
-                  <StatusBadge
-                    label={result.blockState === 'BLOCKED' ? 'ခွင့်မပြုပါ' : 'ခွင့်ပြုသည်'}
-                    variant={result.blockState === 'BLOCKED' ? 'danger' : 'success'}
-                  />
-                </dd>
-              </div>
-
-              {/* ပိတ်ပင်မည့်ရက် သို့မဟုတ် မှတ်ချက် */}
-              <div className="flex items-center justify-between border-t border-gray-100 pt-2">
-                <dt className="text-sm text-gray-500">ပိတ်ပင်မည့်ရက် / မှတ်ချက်</dt>
-                <dd className={`text-sm font-semibold ${result.endOfGracePeriod ? 'text-red-600 font-bold' : 'text-emerald-600'}`}>
-                  {result.endOfGracePeriod 
-                    ? formatDate(result.endOfGracePeriod) 
-                    : "၄ လပိုင်းအရှေ့ပိုင်းက စာရင်းသွင်းထားသောဖုန်း"}
-                </dd>
-              </div>
-
-              {/* စာရင်းသွင်းထားသောရက် */}
-              {result.networkDate ? (
+              {/* Info List */}
+              <dl className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <dt className="text-sm text-gray-500">စာရင်းသွင်းထားသောရက်</dt>
-                  <dd className="text-sm font-medium text-gray-900">
-                    {formatDate(result.networkDate)}
+                  <dt className="text-sm text-gray-500">အခွန်ဆောင်ပြီးစီးမှု အခြေအနေ</dt>
+                  <dd>
+                    <StatusBadge
+                      label={getPaymentStateLabel(result.paymentState, isInvalid)}
+                      variant={getPaymentStateVariant(result.paymentState, isInvalid)}
+                    />
                   </dd>
                 </div>
-              ) : null}
-            </dl>
-          </div>
-        ))}
+
+                <div className="flex items-center justify-between">
+                  <dt className="text-sm text-gray-500">ကွန်ရက်တွင် ချိတ်ဆက်ခွင့်</dt>
+                  <dd>
+                    <StatusBadge
+                      label={isInvalid ? 'မသိရ' : (result.blockState === 'BLOCKED' ? 'ခွင့်မပြုပါ' : 'ခွင့်ပြုသည်')}
+                      variant={isInvalid ? 'neutral' : (result.blockState === 'BLOCKED' ? 'danger' : 'success')}
+                    />
+                  </dd>
+                </div>
+
+                {/* ပိတ်ပင်မည့်ရက် သို့မဟုတ် မှတ်ချက် */}
+                <div className="flex items-center justify-between border-t border-gray-100 pt-2">
+                  <dt className="text-sm text-gray-500">ပိတ်ပင်မည့်ရက် / မှတ်ချက်</dt>
+                  <dd className={`text-sm font-semibold ${result.endOfGracePeriod ? 'text-red-600 font-bold' : (isInvalid ? 'text-gray-500' : 'text-emerald-600')}`}>
+                    {result.endOfGracePeriod 
+                      ? formatDate(result.endOfGracePeriod) 
+                      : (isInvalid ? "-" : "၄ လပိုင်းအရှေ့ပိုင်းက စာရင်းသွင်းထားသောဖုန်း")}
+                  </dd>
+                </div>
+
+                {/* စာရင်းသွင်းထားသောရက် */}
+                {result.networkDate && !isInvalid ? (
+                  <div className="flex items-center justify-between">
+                    <dt className="text-sm text-gray-500">စာရင်းသွင်းထားသောရက်</dt>
+                    <dd className="text-sm font-medium text-gray-900">
+                      {formatDate(result.networkDate)}
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            </div>
+          );
+        })}
 
         {/* ဆောင်ပြီး/မဆောင်ရသေး ရောနေပါက သတိပေးချက်ပြရန် */}
         {isMixedPayment && (
