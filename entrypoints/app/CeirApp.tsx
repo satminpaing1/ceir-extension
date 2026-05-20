@@ -19,7 +19,9 @@ function CeirApp() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 lg:px-8">
+      {/* နေရာလွတ်မကျန်အောင် max-w-7xl ကို သုံးပြီး အကျယ်ချဲ့လိုက်ပါသည် */}
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -31,7 +33,7 @@ function CeirApp() {
         </div>
 
         {/* ── Bulk Checker ── */}
-        <div className="mb-8 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <div className="mb-8 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6 lg:w-2/3 lg:mx-auto">
           <label
             htmlFor="imei-input"
             className="mb-2 block text-sm font-medium text-gray-700"
@@ -69,7 +71,7 @@ function CeirApp() {
 
         {/* ── Error ── */}
         {appError && (
-          <div className="mb-6">
+          <div className="mb-6 lg:w-2/3 lg:mx-auto">
             <ErrorCard message={appError.message} onRetry={handleRetry} />
           </div>
         )}
