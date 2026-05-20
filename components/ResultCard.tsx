@@ -103,7 +103,7 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
                   <span className={`text-sm font-semibold ${result.endOfGracePeriod ? 'text-red-600 font-bold' : (isInvalid ? 'text-gray-500' : 'text-emerald-600')}`}>
                     {result.endOfGracePeriod 
                       ? formatDate(result.endOfGracePeriod) 
-                      : (isInvalid ? "-" : "၄ လပိုင်းအရှေ့ပိုင်းက စာရင်းသွင်းထားသောဖုန်း")}
+                      : (isInvalid ? "-" : "သက်မှတ်ထားချင်းမရှိပါ")}
                   </span>
                 </div>
 
