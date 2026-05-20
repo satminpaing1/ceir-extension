@@ -95,7 +95,7 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
           </div>
         )}
       </div>
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
         {groupedResults.map((group) => (
           <ResultCard
             key={group.id}
