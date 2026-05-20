@@ -19,15 +19,14 @@ function CeirApp() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* နေရာလွတ်မကျန်အောင် max-w-7xl ကို သုံးပြီး အကျယ်ချဲ့လိုက်ပါသည် */}
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            CEIR Extension
+          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
+            CEIR Checker <span className="text-indigo-600">SMP TECH</span>
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-gray-500">
             IMEI များကို တစ်ကြောင်းချင်းစီ ထည့်သွင်း စစ်ဆေးနိုင်ပါသည်။
           </p>
         </div>
