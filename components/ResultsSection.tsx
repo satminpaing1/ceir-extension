@@ -12,7 +12,6 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
   const [deviceInfoOpen, setDeviceInfoOpen] = useState<Record<string, boolean>>({});
   const [allExpanded, setAllExpanded] = useState(false);
 
-  // Model Name တူရင် IMEI တွေကို Group ဖွဲ့မည့် Logic
   const groupedResults = useMemo(() => {
     const groups: { id: string; items: ImeiCheckResult[]; deviceInfo: any }[] = [];
     const modelMap = new Map<string, number>();
@@ -28,7 +27,6 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
           modelMap.set(key, groups.length - 1);
         }
       } else {
-        // Device Info မရှိရင် သီးသန့်စီ ခွဲထားမယ်
         groups.push({ id: r.IMEI, items: [r], deviceInfo: null });
       }
     }
@@ -63,14 +61,11 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
         </h2>
         {groupedResults.some((g) => g.deviceInfo) && (
           <div className="flex items-stretch overflow-hidden rounded-md border border-gray-300 bg-white divide-x divide-gray-300">
-            {/* Copy All */}
             <CopyButton
               onCopy={copyAll}
               title="Copy all results"
               className="rounded-none! p-2! transition-colors hover:bg-gray-50"
             />
-
-            {/* Expand / Collapse All */}
             <button
               type="button"
               onClick={toggleAll}
@@ -95,7 +90,9 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
           </div>
         )}
       </div>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+      
+      {/* ဒီနေရာမှာ ၃ ကော်လံအစား ၂ ကော်လံပြောင်းထားပါတယ် (ပိုကျယ်ပြီး ရှင်းလင်းသွားအောင်) */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {groupedResults.map((group) => (
           <ResultCard
             key={group.id}
