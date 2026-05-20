@@ -16,7 +16,6 @@ interface ResultCardProps {
   onToggleDeviceInfo: () => void;
 }
 
-// မှားယွင်းနေသော IMEI ဖြစ်ပါက 'မသိရ' ဟုသာ ပြရန်
 function getPaymentStateLabel(state: string, isInvalid: boolean) {
   if (isInvalid) return 'မသိရ';
   if (state === 'PAID' || state === 'ACCUMULATION') return 'ဆောင်ပြီး';
@@ -51,7 +50,6 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
       <div className="p-4 sm:p-5">
         
         {group.items.map((result, index) => {
-          // Frontend ပေါ်တွင် IMEI အရှည်နှင့် ဂဏန်း ဟုတ်/မဟုတ် သေချာစစ်ဆေးခြင်း
           const isInvalid = 
             result.WrongFormat || 
             result.Incorrect || 
@@ -61,21 +59,13 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
 
           return (
             <div key={result.IMEI} className={index > 0 ? "mt-6 border-t pt-6" : ""}>
-              {/* Header */}
-              <div className="mb-4 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2 flex-wrap">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   <CopyButton 
                     onCopy={async () => navigator.clipboard.writeText(formatResultForClipboard(result))} 
                     title="Copy result" 
                   />
-                  
-                  {/* SMP TECH Branding Added Here */}
-                  <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-bold text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
-                    SMP TECH
-                  </span>
-
                   <h3 className="font-mono text-sm font-semibold text-gray-900">
-                    {/* Device တစ်ခုတည်းမှာ IMEI ၁ ခုထက်များနေရင် IMEI 1, IMEI 2 စသဖြင့် တပ်ပေးရန် */}
                     {group.items.length > 1 && (
                       <span className="text-gray-500 mr-1.5">IMEI {index + 1} :</span>
                     )}
@@ -85,11 +75,9 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
                 <StatusBadge
                   label={isInvalid ? 'IMEI မှားယွင်းသည်' : 'IMEI မှန်ကန်သည်'}
                   variant={isInvalid ? 'danger' : 'success'}
-                  className="flex-shrink-0"
                 />
               </div>
 
-              {/* Info List */}
               <dl className="space-y-3">
                 <div className="flex items-center justify-between">
                   <dt className="text-sm text-gray-500">အခွန်ဆောင်ပြီးစီးမှု အခြေအနေ</dt>
@@ -111,7 +99,6 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
                   </dd>
                 </div>
 
-                {/* ပိတ်ပင်မည့်ရက် သို့မဟုတ် မှတ်ချက် */}
                 <div className="flex items-center justify-between border-t border-gray-100 pt-2">
                   <dt className="text-sm text-gray-500">ပိတ်ပင်မည့်ရက် / မှတ်ချက်</dt>
                   <dd className={`text-sm font-semibold ${result.endOfGracePeriod ? 'text-red-600 font-bold' : (isInvalid ? 'text-gray-500' : 'text-emerald-600')}`}>
@@ -121,7 +108,6 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
                   </dd>
                 </div>
 
-                {/* စာရင်းသွင်းထားသောရက် */}
                 {result.networkDate && !isInvalid ? (
                   <div className="flex items-center justify-between">
                     <dt className="text-sm text-gray-500">စာရင်းသွင်းထားသောရက်</dt>
@@ -135,7 +121,6 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
           );
         })}
 
-        {/* ဆောင်ပြီး/မဆောင်ရသေး ရောနေပါက သတိပေးချက်ပြရန် */}
         {isMixedPayment && (
           <div className="mt-5 rounded-md bg-amber-50 p-4 border border-amber-200">
             <div className="flex">
@@ -154,7 +139,6 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
           </div>
         )}
 
-        {/* Device Info */}
         {group.deviceInfo ? (
           <div className="mt-5 border-t pt-4">
             <button 
