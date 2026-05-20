@@ -62,16 +62,22 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
           return (
             <div key={result.IMEI} className={index > 0 ? "mt-6 border-t pt-6" : ""}>
               {/* Header */}
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2 flex-wrap">
                   <CopyButton 
                     onCopy={async () => navigator.clipboard.writeText(formatResultForClipboard(result))} 
                     title="Copy result" 
                   />
+                  
+                  {/* SMP TECH Branding Added Here */}
+                  <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-bold text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
+                    SMP TECH
+                  </span>
+
                   <h3 className="font-mono text-sm font-semibold text-gray-900">
                     {/* Device တစ်ခုတည်းမှာ IMEI ၁ ခုထက်များနေရင် IMEI 1, IMEI 2 စသဖြင့် တပ်ပေးရန် */}
                     {group.items.length > 1 && (
-                      <span className="text-indigo-600 mr-1">IMEI {index + 1} :</span>
+                      <span className="text-gray-500 mr-1.5">IMEI {index + 1} :</span>
                     )}
                     {result.IMEI}
                   </h3>
@@ -79,6 +85,7 @@ export default function ResultCard({ group, isDeviceInfoOpen, onToggleDeviceInfo
                 <StatusBadge
                   label={isInvalid ? 'IMEI မှားယွင်းသည်' : 'IMEI မှန်ကန်သည်'}
                   variant={isInvalid ? 'danger' : 'success'}
+                  className="flex-shrink-0"
                 />
               </div>
 
