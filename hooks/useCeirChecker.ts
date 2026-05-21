@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { fetchAndSolveAltcha, FetchError, type AltchaSolution } from '@/utils/altcha';
-import { verifyImeis, fetchDeviceInfo } from '@/utils/ceir-api'; // fetchDeviceInfo ကိုပါ import လုပ်ပါ
+import { verifyImeis, fetchDeviceInfo } from '@/utils/ceir-api'; 
 import type { ImeiCheckResult } from '@/utils/types';
 
 const DRAFT_KEY = 'ceir_imei_draft';
@@ -46,8 +46,13 @@ export function useCeirChecker() {
     const imeis = parseImeis(imeiText);
     if (imeis.length === 0) return;
 
-    let solution = solutionRef.current;
-    if (!solution) return;
+    // အရေးကြီးဆုံး ပြင်ဆင်ချက်: စစ်ဆေးတိုင်း Token အသစ် အရင်တောင်းမည် (Single-use ဖြစ်သောကြောင့်)
+    let solution = await solveCaptcha(); 
+    if (!solution) {
+        // Token မရခဲ့လျှင် Error ပြပြီး ရပ်မည်
+        setAppError({ message: "Security Token ရယူ၍ မရပါ။", kind: 'captcha' });
+        return; 
+    }
 
     setIsChecking(true);
     setAppError(null);
@@ -56,23 +61,25 @@ export function useCeirChecker() {
     try {
       const data = await verifyImeis(imeis, solution);
       
-      // API ကရလာတဲ့ IMEI တွေကို Loop ပတ်ပြီး Device Info တွဲယူမယ်
       const enrichedResults = await Promise.all(
         data.IMEI_CHECK_LIST.map(async (item) => {
           try {
-            // အစ်ကို့ API က device info ကို ဒီ function နဲ့ ယူရတာပါ
             const deviceInfo = await fetchDeviceInfo(item.IMEI, solution!);
             return { ...item, deviceInfo };
           } catch {
-            return item; // Info မရရင်လည်း ရသလောက်ပဲပြမယ်
+            return item; 
           }
         })
       );
       
       setResults(enrichedResults);
     } catch (err: unknown) {
-      if (err instanceof FetchError && err.status === 412) {
+      // 412 (Precondition Failed) သို့မဟုတ် 500 (Internal Server Error) နှစ်ခုလုံးကို ဖမ်းမည်
+      const isTokenError = err instanceof FetchError && (err.status === 412 || err.status === 500);
+      
+      if (isTokenError) {
         try {
+          // နောက်တစ်ကြိမ် ထပ်ကြိုးစားကြည့်မည်
           solution = await solveCaptcha();
           if (!solution) throw new Error('Failed to re-solve captcha.');
           const data = await verifyImeis(imeis, solution);
@@ -94,7 +101,6 @@ export function useCeirChecker() {
     }
   }, [imeiText, solveCaptcha]);
 
-  // ... (handleRetry နဲ့ ကျန်တဲ့ code တွေက မူရင်းအတိုင်းထားပါ)
   const handleRetry = useCallback(() => {
     if (!appError) return;
     switch (appError.kind) {
@@ -110,6 +116,7 @@ export function useCeirChecker() {
   useEffect(() => {
     const draft = localStorage.getItem(DRAFT_KEY);
     if (draft) { setImeiText(draft); localStorage.removeItem(DRAFT_KEY); }
+    // Component စတက်ချိန်တွင်လည်း ကြိုပြီး Token တစ်ခါ တောင်းထားမည်
     solveCaptcha();
   }, [solveCaptcha]);
 
