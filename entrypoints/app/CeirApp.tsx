@@ -18,7 +18,6 @@ function CeirApp() {
   } = useCeirChecker();
 
   return (
-    {/* Glassmorphism & Mesh Gradient Background */}
     <div className="min-h-screen bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-50 via-slate-50 to-cyan-50">
       
       {/* Top Navigation Bar Style */}
