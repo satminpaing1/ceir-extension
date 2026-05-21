@@ -9,5 +9,7 @@ export default defineConfig({
   }),
   manifest: {
     host_permissions: ['https://ceir.gov.mm/check-status'],
+    // Extension အား Chrome Storage (မှတ်ဉာဏ်) အသုံးပြုခွင့်ပေးရန်
+    permissions: ['storage'], 
   },
 });
