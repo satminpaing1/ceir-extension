@@ -19,22 +19,18 @@ function CeirApp() {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // စာမျက်နှာ အောက်ခြေရှိ Body အဖြူရောင်ကို အသေအချာ ဖျောက်ပေးရန်
   useEffect(() => {
     if (isDarkMode) {
-      document.body.style.backgroundColor = '#0f172a'; // Tailwind slate-900
+      document.body.style.backgroundColor = '#0f172a';
       document.documentElement.style.backgroundColor = '#0f172a';
     } else {
-      document.body.style.backgroundColor = '#f8fafc'; // Tailwind slate-50
+      document.body.style.backgroundColor = '#f8fafc';
       document.documentElement.style.backgroundColor = '#f8fafc';
     }
   }, [isDarkMode]);
 
   return (
-    {/* bg-fixed ထည့်ထားသဖြင့် အောက်သို့ဆွဲချသော်လည်း နောက်ခံအရောင် ပြတ်မသွားတော့ပါ */}
     <div className={`${isDarkMode ? 'dark' : ''} min-h-screen w-full bg-fixed bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-50 via-slate-50 to-cyan-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 transition-colors duration-300`}>
-      
-      {/* Top Navigation Bar Style */}
       <div className="sticky top-0 z-10 border-b border-white/40 bg-white/60 dark:border-slate-700/40 dark:bg-slate-900/60 px-4 py-4 backdrop-blur-md shadow-sm transition-colors duration-300">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
@@ -51,7 +47,6 @@ function CeirApp() {
             </div>
           </div>
 
-          {/* Theme Toggle Button */}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="rounded-full p-2.5 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-700 transition-all focus:outline-none"
@@ -71,9 +66,7 @@ function CeirApp() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* ── Bulk Checker Panel ── */}
         <div className="mb-10 rounded-2xl border border-white/60 bg-white/70 dark:border-slate-700/60 dark:bg-slate-800/70 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-slate-900/50 backdrop-blur-xl sm:p-8 lg:w-2/3 lg:mx-auto relative overflow-hidden transition-colors duration-300">
-          
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-400/10 dark:bg-blue-400/5 blur-3xl"></div>
           
           <div className="relative">
