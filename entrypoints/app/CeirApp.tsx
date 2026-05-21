@@ -17,11 +17,9 @@ function CeirApp() {
     handleRetry,
   } = useCeirChecker();
 
-  // Dark Mode State 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
-    {/* ဤနေရာတွင် dark class ကို တိုက်ရိုက် ထည့်သွင်းထားပါသည် */}
     <div className={isDarkMode ? 'dark' : ''}>
       <div className="min-h-screen bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-50 via-slate-50 to-cyan-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 transition-colors duration-300">
         
@@ -69,7 +67,7 @@ function CeirApp() {
             
             <div className="relative">
               <h2 className="mb-2 text-center text-xl font-extrabold text-slate-800 dark:text-slate-100">
-                CEIR Checker
+                MM CEIR Checker By SMP
               </h2>
 
               <label htmlFor="imei-input" className="mb-4 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
