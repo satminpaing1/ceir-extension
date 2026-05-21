@@ -46,10 +46,17 @@ function CeirApp() {
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-400/10 blur-3xl"></div>
           
           <div className="relative">
-            <label htmlFor="imei-input" className="mb-3 flex items-center justify-between text-sm font-semibold text-slate-700">
-              <span>ထည့်သွင်းရန် IMEI နံပါတ်များ</span>
+            {/* ── New Centered Title ── */}
+            <h2 className="mb-2 text-center text-xl font-extrabold text-slate-800">
+              CEIR Checker
+            </h2>
+
+            {/* ── Centered Label ── */}
+            <label htmlFor="imei-input" className="mb-4 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700">
+              <span>IMEI များကို တစ်ကြောင်းချင်းစီ ထည့်သွင်း စစ်ဆေးနိုင်ပါသည်။</span>
               <code className="rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-500">*#06#</code>
             </label>
+
             <textarea
               id="imei-input"
               rows={5}
