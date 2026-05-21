@@ -17,7 +17,6 @@ function CeirApp() {
     handleRetry,
   } = useCeirChecker();
 
-  // Dark Mode State & Effect
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -29,7 +28,6 @@ function CeirApp() {
   }, [isDarkMode]);
 
   return (
-    {/* Dark Mode Backgrounds Added */}
     <div className="min-h-screen bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-50 via-slate-50 to-cyan-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 transition-colors duration-300">
       
       {/* Top Navigation Bar Style */}
@@ -56,12 +54,10 @@ function CeirApp() {
             title="Toggle Dark Mode"
           >
             {isDarkMode ? (
-              // Sun Icon for Dark Mode
               <svg className="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 4.22a1 1 0 011.415 0l.708.708a1 1 0 01-1.414 1.414l-.708-.708a1 1 0 010-1.414zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM14.22 15.636a1 1 0 01-1.414 1.414l-.708-.708a1 1 0 011.414-1.414l.708.708zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.22-1.414a1 1 0 011.414 1.414l-.708.708a1 1 0 01-1.414-1.414l.708-.708zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zm1.414-4.22a1 1 0 010-1.414l.708-.708a1 1 0 011.414 1.414l-.708.708a1 1 0 01-1.414 0zM10 5a5 5 0 100 10 5 5 0 000-10z" clipRule="evenodd" />
               </svg>
             ) : (
-              // Moon Icon for Light Mode
               <svg className="h-5 w-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
               </svg>
