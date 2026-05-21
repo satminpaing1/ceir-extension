@@ -12,22 +12,29 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
   const [deviceInfoOpen, setDeviceInfoOpen] = useState<Record<string, boolean>>({});
   const [allExpanded, setAllExpanded] = useState(false);
 
+  // ပိုမိုစမတ်ကျသော Grouping Logic
   const groupedResults = useMemo(() => {
     const groups: { id: string; items: ImeiCheckResult[]; deviceInfo: any }[] = [];
-    const modelMap = new Map<string, number>();
 
     for (const r of results) {
-      if (r.deviceInfo && r.deviceInfo.gsmaModelName) {
-        const key = r.deviceInfo.gsmaModelName;
-        if (modelMap.has(key)) {
-          const index = modelMap.get(key)!;
-          groups[index].items.push(r);
-        } else {
-          groups.push({ id: key, items: [r], deviceInfo: r.deviceInfo });
-          modelMap.set(key, groups.length - 1);
-        }
+      const lastGroup = groups.length > 0 ? groups[groups.length - 1] : null;
+
+      // ဖုန်းမော်ဒယ်တူပြီး၊ ကတ်အရေအတွက် (simSlots သို့မဟုတ် အများဆုံး ၂ ကတ်) မပြည့်သေးမှသာ ပေါင်းထည့်မည်
+      const maxSims = lastGroup?.deviceInfo?.simSlots > 0 ? lastGroup.deviceInfo.simSlots : 2;
+      
+      const canGroup =
+        lastGroup &&
+        lastGroup.deviceInfo &&
+        r.deviceInfo &&
+        lastGroup.deviceInfo.gsmaModelName === r.deviceInfo.gsmaModelName &&
+        lastGroup.items.length < maxSims;
+
+      if (canGroup) {
+        // ဖုန်းတစ်လုံးတည်းဟု ယူဆပြီး အုပ်စုတွင်း ပေါင်းထည့်သည်
+        lastGroup.items.push(r);
       } else {
-        groups.push({ id: r.IMEI, items: [r], deviceInfo: null });
+        // ဖုန်းနောက်တစ်လုံးဖြစ်သွားပြီမို့ အုပ်စုအသစ်တစ်ခု ဖန်တီးသည်
+        groups.push({ id: r.IMEI, items: [r], deviceInfo: r.deviceInfo });
       }
     }
     return groups;
@@ -91,7 +98,7 @@ export default function ResultsSection({ results }: ResultsSectionProps) {
         )}
       </div>
       
-      {/* ဒီနေရာမှာ ၃ ကော်လံအစား ၂ ကော်လံပြောင်းထားပါတယ် (ပိုကျယ်ပြီး ရှင်းလင်းသွားအောင်) */}
+      {/* ၂ ကော်လံ Grid */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {groupedResults.map((group) => (
           <ResultCard
