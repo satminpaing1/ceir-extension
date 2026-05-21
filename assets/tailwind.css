@@ -1,4 +1,4 @@
 @import "tailwindcss";
 
-/* Tailwind v4 အတွက် Dark Mode ကို Class ဖြင့် အလုပ်လုပ်စေရန် */
-@custom-variant dark (&:is(.dark *));
+/* Tailwind v4 တွင် Dark Mode အား Class ဖြင့် အလုပ်လုပ်စေရန် သေချာသောနည်းလမ်း */
+@variant dark (&:where(.dark, .dark *));
